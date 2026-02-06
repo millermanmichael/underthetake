@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Under the Take</title>
+<meta name="description" content="Sense-making kits for confusing events. No author. No agenda. Just the pieces.">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0a0a;
+  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  padding: 3rem 1.5rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+}
+.tagline {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 3rem;
+}
+.kit-list { list-style: none; }
+.kit-list li {
+  border-left: 2px solid #333;
+  padding: 1rem 0 1rem 1.5rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+.kit-list li:hover { border-color: #4a9eff; }
+.kit-list a {
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+.kit-list a:hover { color: #4a9eff; }
+.kit-date {
+  color: #555;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+.empty {
+  color: #444;
+  font-style: italic;
+  margin-top: 2rem;
+}
+footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid #1a1a1a;
+  color: #444;
+  font-size: 0.8rem;
+}
+</style>
+</head>
+<body>
+<h1>Under the Take</h1>
+<p class="tagline">Sense-making kits for confusing events.</p>
+
+<ul class="kit-list" id="kits">
+  <!-- Populated by build script or dynamically -->
+</ul>
+
+<p class="empty" id="empty-state">No kits published yet. The scanner is watching.</p>
+
+<footer>No author. No agenda. Just the pieces.</footer>
+
+<script>
+// Simple: read manifest.txt and build the list
+// In production, a build script generates this statically
+fetch('manifest.txt')
+  .then(r => r.ok ? r.text() : '')
+  .then(text => {
+    const files = text.trim().split('\n').filter(Boolean).reverse();
+    if (files.length === 0) return;
+    document.getElementById('empty-state').style.display = 'none';
+    const list = document.getElementById('kits');
+    files.forEach(file => {
+      const date = file.substring(0, 10);
+      const name = file.substring(11).replace('.html', '').replace(/-/g, ' ');
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="${file}">${name}</a><div class="kit-date">${date}</div>`;
+      list.appendChild(li);
+    });
+  })
+  .catch(() => {});
+</script>
+</body>
+</html>
